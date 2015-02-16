@@ -93,25 +93,40 @@ override_utf8_locale yes
 # Add spaces to keep things from moving about?  This only affects certain objects.
 use_spacer none
 
+# Interface up strictness
+if_up_strictness address
+
 # Colors
 color2 CC9900
+color3 00BB00
+color4 1B79CC
 
 # CPU Template
 template1 ${alignr 100}Core-\1: ${cpu cpu\1}% ${alignr}${cpubar 8,100 cpu\1}
 # HD Template
-template2 \1: ${alignr}${fs_bar 8,100 /home}\n${alignr}${fs_used \2} / ${fs_size \2}
+template2 \1: ${alignr}${fs_bar 8,100 \2}\n${alignr}${fs_used \2} / ${fs_size \2}
 #Header template
 template3 ${color2}\1${color} ${hr 2} 
+# GPU template
+template4 \1: $alignr ${exec nvidia-smi --query-gpu=\2 --format=csv | sed -n '2{p;q}'}
 
 TEXT
 ${color2}${font Trebuchet MS:size=10}${alignc}${nodename}${color}
 ${color}${alignc}${time %l:%M %p}${font}
-${alignc}${time %A %d %B}${font}
+${alignc}${time %A %d %B %Y}${font}
 
 ${color2}SYSTEM ${color}  ${hr 2}
 Uptime: ${alignr}${uptime}
 
+${template3 GPU} 
+${alignr}${color3}${exec nvidia-smi --query-gpu=gpu_name --format=csv | sed -n '2{p;q}'}${color}
+#RAM: $alignr ${exec nvidia-smi --query-gpu=memory.used --format=csv | sed -n '2{p;q}'} / ${exec nvidia-smi --query-gpu=memory.total --format=csv | sed -n '2{p;q}'}
+${template4 Driver driver_version}
+${template4 Temperature temperature.gpu}°C
+${template4 RAM memory.used} / ${exec nvidia-smi --query-gpu=memory.total --format=csv | sed -n '2{p;q}'}
+
 ${template3 CPU} 
+$alignr${freq_g} GHz
 #   Core1: ${cpu cpu1}% ${alignr}${cpubar 8,100 cpu1}
 ${template1 1}
 ${template1 2}
@@ -122,14 +137,13 @@ ${template3 MEMORY}
 Usage:  ${alignr}$mem / $memmax
 ${color1} ${memgraph 50,185 FFFF00 FF0000 s}
 
-${template3 HD} 
-
-I/O: 
-Read: ${alignr}${diskio_read}
-Write:${alignr}${diskio_write}
-${diskiograph}
+${template3 STORAGE} 
+Read: ${alignr 1}${diskio_read}
+Write:${alignr 1}${diskio_write}
+Temp: ${alignr 1}${execi 5 hddtemp /dev/sda | cut -c 33-}
 ${template2 Home /home}
- 
+${diskiograph}
+
 ${template3 PROCESSES} 
  
 NAME $alignr PID    CPU
@@ -143,17 +157,25 @@ ${top name 7} $alignr ${top pid 7} ${top cpu 7}
 ${top name 8} $alignr ${top pid 8} ${top cpu 8}
  
 ${template3 NETWORK} 
-${if_existing /proc/net/route wlan0}
+${if_existing /proc/net/route wlan0}${color}Interface: ${alignr}WLAN0
+SSID: ${alignr}${exec iwgetid -r}
 IP Address: ${alignr} ${addr wlan0}
-Up: ${upspeed wlan0}/s ${alignr}${upspeedgraph wlan0 8,60 789E2D A7CC5C}
-Down: ${downspeed wlan0}/s ${alignr}${downspeedgraph wlan0 8,60 789E2D A7CC5C}
-Upload: ${alignr}${totalup wlan0}
-Download: ${alignr}${totaldown wlan0}
-Signal: ${wireless_link_qual wlan0}% ${alignr}${wireless_link_bar 8,60 wlan0}${else}${if_existing /proc/net/route eth0}
+${color3}Download:${color}${alignr}${downspeedgraph wlan0 8,100 789E2D A7CC5C}
+Speed: ${alignr}${downspeed wlan0}/s 
+Total: ${alignr}${totaldown wlan0}
+${color4}Upload: ${color}${alignr}${upspeedgraph wlan0 8,100 789E2D A7CC5C}
+Speed: ${alignr}${upspeed wlan0}/s 
+Total: ${alignr}${totalup wlan0}
+Signal: ${wireless_link_qual wlan0}% ${alignr}${wireless_link_bar 8,100 wlan0}${else}${if_existing /proc/net/route eth0}
+Interface: ${alignr}ETH0
+IP Address: ${alignr} ${addr eth0}
+Gateway: ${alignr} ${gw_ip}
 Up: ${upspeed eth0} /s ${alignr}${upspeedgraph eth0 8,60 789E2D A7CC5C}
 Down: ${downspeed eth0} /s ${alignr}${downspeedgraph eth0 8,60 789E2D A7CC5C}
 Upload: ${alignr}${totalup eth0}
 Download: ${alignr}${totaldown eth0}${endif}${else}${if_existing /proc/net/route eth1}
+Interface: ${alignr}ETH1
+IP Address: ${alignr} ${addr eth1}
 Up: ${upspeed eth1} ${alignr}${upspeedgraph eth1 8,60 789E2D A7CC5C}
 Down: ${downspeed eth1} ${alignr}${downspeedgraph eth1 8,60 789E2D A7CC5C}
 Upload: ${alignr}${totalup eth1}
