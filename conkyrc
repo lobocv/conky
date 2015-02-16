@@ -24,7 +24,6 @@ text_buffer_size 2048
 # Update interval in seconds
 update_interval 1
 
- 
 
 # This is the number of times Conky will update before quitting.
 # Set to zero to run forever.
@@ -40,10 +39,15 @@ total_run_times 0
  
 # Use double buffering (reduces flicker, may not work for everyone)
 double_buffer yes
+
+# Gap between borders of screen and text
+# same thing as passing -x at command line
+gap_x 10
+gap_y 10
  
 # Minimum size of text area
-minimum_size 180 0
- 
+minimum_size 180 1070
+
 # Draw shades?
 draw_shades yes
  
@@ -68,12 +72,7 @@ own_window_colour black
  
 # Text alignment, other possible values are commented
 alignment top_right
- 
-# Gap between borders of screen and text
-# same thing as passing -x at command line
-gap_x 10
-gap_y 10
- 
+
 # Subtract file system buffers from used memory?
 no_buffers yes
  
@@ -97,13 +96,16 @@ use_spacer none
 # Colors
 color2 CC9900
 
-# HD Template
+# CPU Template
 template1 ${alignr 100}Core-\1: ${cpu cpu\1}% ${alignr}${cpubar 8,100 cpu\1}
+# HD Template
 template2 \1: ${alignr}${fs_bar 8,100 /home}\n${alignr}${fs_used \2} / ${fs_size \2}
+#Header template
 template3 ${color2}\1${color} ${hr 2} 
 
 TEXT
-${color2}${font Trebuchet MS:size=10}$alignc$nodename
+${color2}${font Trebuchet MS:size=10}${alignc}${nodename}${color}
+${color}${alignc}${time %l:%M %p}${font}
 ${alignc}${time %A %d %B}${font}
 
 ${color2}SYSTEM ${color}  ${hr 2}
