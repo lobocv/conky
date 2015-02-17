@@ -102,7 +102,7 @@ color3 00BB00
 color4 1B79CC
 
 # CPU Template
-template1 ${alignr 100}Core-\1: ${cpu cpu\1}% ${alignr}${cpubar 8,100 cpu\1}
+template1 ${alignr 100}Core-\1: ${cpu cpu\1}% ${alignr}${cpubar cpu\1 8,100 }
 # HD Template
 template2 \1: ${alignr}${fs_bar 8,100 \2}\n${alignr}${fs_used \2} / ${fs_size \2}
 #Header template
@@ -126,8 +126,7 @@ ${template4 Temperature temperature.gpu}°C
 ${template4 RAM memory.used} / ${exec nvidia-smi --query-gpu=memory.total --format=csv | sed -n '2{p;q}'}
 
 ${template3 CPU} 
-$alignr${freq_g} GHz
-#   Core1: ${cpu cpu1}% ${alignr}${cpubar 8,100 cpu1}
+${alignr}${color3}${exec cat /proc/cpuinfo | grep 'model name' -m 1 | cut -c 32-40}${color}
 ${template1 1}
 ${template1 2}
 ${template1 3}
