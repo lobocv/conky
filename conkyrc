@@ -132,7 +132,10 @@ ${template1 2}
 ${template1 3}
 ${template1 4}
 
-${template3 MEMORY} 
+${template3 MEMORY}
+${alignr}${color3}${exec dmidecode -t memory | grep 'Part Number:' | tail -n 1 | cut -c 15-25}${color}
+Speed: ${alignr}${exec dmidecode -t memory | grep 'Configured Clock Speed:' | tail -n 1 | cut -c 26-}
+Voltage: ${alignr}${exec dmidecode -t memory | grep 'Configured voltage:' | tail -n 1 | cut -c 23-}
 Usage:  ${alignr}$mem / $memmax
 ${color1} ${memgraph 50,185 FFFF00 FF0000 s}
 
