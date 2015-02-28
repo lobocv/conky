@@ -1,1 +1,3 @@
-sudo conky -c ./conkyrc
+#!/bin/sh
+
+(cd ~/lobocv/conky && sudo conky -c ./conkyrc)
