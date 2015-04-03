@@ -114,6 +114,7 @@ TEXT
 ${color2}${font Trebuchet MS:size=10}${alignc}${nodename}${color}
 ${color}${alignc}${time %l:%M %p}${font}
 ${alignc}${time %A %d %B %Y}${font}
+${color}${alignc} ${execi 900 ~/lobocv/conky/get_weather.sh weather} ${execi 900 ~/lobocv/conky/get_weather.sh temp}
 
 ${color2}SYSTEM ${color}  ${hr 2}
 Uptime: ${alignr}${uptime}
